@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 libgl1-mesa-glx
 libsm6
 libxrender1
+=======
+libgl1-mesa-glx
+libsm6
+libxrender1
+>>>>>>> 5a0ba68 (prepare for render deploy)
 libglib2.0-0
