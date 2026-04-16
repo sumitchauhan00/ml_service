@@ -56,8 +56,3 @@ env/
 build/
 dist/
 
-# Model/artifact files (optional - agar bahut bade ho)
-# *.pkl
-# *.pt
-# *.h5
->>>>>>> 5a0ba68 (prepare for render deploy)
