@@ -8,12 +8,39 @@ import mediapipe as mp
 
 from landmark_features import extract_features
 from sentence_builder import SentenceBuilder
+import os
+import requests
 
 app = Flask(__name__)
 CORS(app)
 
 BASE_DIR = Path(__file__).resolve().parent
 MODEL_PATH = BASE_DIR / "landmark_model.pkl"
+
+MODEL_URL = os.getenv("MODEL_URL", "").strip()
+
+def download_model_if_missing():
+    if MODEL_PATH.exists():
+        return
+    if not MODEL_URL:
+        raise FileNotFoundError(
+            f"Model not found: {MODEL_PATH}. Also MODEL_URL env var is not set."
+        )
+
+    print(f"[startup] Downloading model from MODEL_URL -> {MODEL_PATH}")
+    resp = requests.get(MODEL_URL, stream=True, timeout=180)
+    resp.raise_for_status()
+
+    with open(MODEL_PATH, "wb") as f:
+        for chunk in resp.iter_content(chunk_size=1024 * 1024):
+            if chunk:
+                f.write(chunk)
+
+    if not MODEL_PATH.exists() or MODEL_PATH.stat().st_size == 0:
+        raise RuntimeError("Downloaded model file is empty or missing.")
+# ===========================================================
+
+download_model_if_missing()
 
 if not MODEL_PATH.exists():
     raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
