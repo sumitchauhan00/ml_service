@@ -1,0 +1,23 @@
+Flask-Cors==4.0.1
+gunicorn==22.0.0
+
+# Critical: avoid NumPy 2.x binary-compat issues with TF/mediapipe
+numpy==1.26.4
+
+# Computer vision / landmarks
+
+opencv-python==4.10.0.84
+
+# If your code imports tensorflow (mediapipe tasks may pull it in on some setups)
+tensorflow-cpu==2.15.0
+
+# If you load a .pkl model trained with sklearn
+scikit-learn==1.5.0
+
+# Common utilities (often needed by sklearn/pandas pipelines; safe to keep)
+joblib==1.4.2
+
+pandas==2.2.2
+
+mediapipe==0.10.33
+requests==2.32.3

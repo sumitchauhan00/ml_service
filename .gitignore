@@ -1,0 +1,30 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# OS/editor files
+.DS_Store
+.vscode/
+.idea/
+
+# Logs
+*.log
+
+# Secrets
+.env
+.env.*
+
+# Build/dist
+build/
+dist/
+
+# Model/artifact files (optional - agar bahut bade ho)
+*.pkl
+*.pt
+*.h5
