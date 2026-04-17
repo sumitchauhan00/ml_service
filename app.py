@@ -5,6 +5,8 @@ import cv2
 import pickle
 from pathlib import Path
 import mediapipe as mp
+if not hasattr(mp, "solutions"):
+    raise RuntimeError("Invalid mediapipe build: 'solutions' API missing.")
 
 from landmark_features import extract_features
 from sentence_builder import SentenceBuilder

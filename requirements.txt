@@ -19,6 +19,5 @@ scikit-learn==1.5.0
 joblib==1.4.2
 
 pandas==2.2.2
-
-mediapipe==0.10.33
+mediapipe==0.10.14
 requests==2.32.3
