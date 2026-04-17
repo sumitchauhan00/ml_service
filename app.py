@@ -82,13 +82,6 @@ label_encoder = artefact["label_encoder"]
 CONFIDENCE_THRESHOLD = float(artefact.get("confidence_threshold", 0.65))
 
 mp_hands = mp.solutions.hands
-hands = mp_hands.Hands(
-    static_image_mode=True,
-    max_num_hands=2,
-    min_detection_confidence=0.6,
-    min_tracking_confidence=0.5,
-    model_complexity=1,
-)
 
 # sentence_builder.py old signature supports only timeout, max_words
 sb = SentenceBuilder(
