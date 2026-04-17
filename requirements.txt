@@ -1,4 +1,4 @@
-python==3.10.11
+
 Flask-Cors==4.0.1
 gunicorn==22.0.0
 
