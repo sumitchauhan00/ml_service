@@ -29,6 +29,7 @@ dist/
 *.pkl
 *.pt
 *.h5
+landmark_model.pkl
 =======
 # Python cache
 __pycache__/
