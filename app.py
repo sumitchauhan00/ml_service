@@ -19,6 +19,13 @@ MODEL_PATH = BASE_DIR / "landmark_model.pkl"
 
 MODEL_URL = os.getenv("MODEL_URL", "").strip()
 
+def _looks_like_html_prefix(path: Path) -> bool:
+    if not path.exists() or path.stat().st_size == 0:
+        return False
+    with open(path, "rb") as f:
+        head = f.read(256).lstrip().lower()
+    return head.startswith(b"<") or head.startswith(b"<!doctype html") or b"<html" in head[:100]
+
 def download_model_if_missing():
     if MODEL_PATH.exists():
         return
@@ -38,6 +45,13 @@ def download_model_if_missing():
 
     if not MODEL_PATH.exists() or MODEL_PATH.stat().st_size == 0:
         raise RuntimeError("Downloaded model file is empty or missing.")
+
+    if _looks_like_html_prefix(MODEL_PATH):
+        raise RuntimeError(
+            "Downloaded file is HTML, not a valid pickle. "
+            "Use a direct model file URL in MODEL_URL."
+        )
+
 # ===========================================================
 
 download_model_if_missing()
@@ -45,8 +59,21 @@ download_model_if_missing()
 if not MODEL_PATH.exists():
     raise FileNotFoundError(f"Model not found: {MODEL_PATH}")
 
+if _looks_like_html_prefix(MODEL_PATH):
+    raise RuntimeError(
+        f"{MODEL_PATH} appears to be HTML, not a pickle file. Check MODEL_URL."
+    )
+
 with open(MODEL_PATH, "rb") as f:
     artefact = pickle.load(f)
+
+if not isinstance(artefact, dict):
+    raise RuntimeError("Model artefact is not a dict. Expected keys: pipeline, label_encoder.")
+
+required_keys = {"pipeline", "label_encoder"}
+missing = required_keys - set(artefact.keys())
+if missing:
+    raise RuntimeError(f"Model artefact missing required keys: {missing}")
 
 pipeline = artefact["pipeline"]
 label_encoder = artefact["label_encoder"]
@@ -80,7 +107,12 @@ def hand_to_flat(hand_lm):
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"ok": True})
+    return jsonify({
+        "ok": True,
+        "model_path": str(MODEL_PATH),
+        "model_exists": MODEL_PATH.exists(),
+        "model_size_bytes": MODEL_PATH.stat().st_size if MODEL_PATH.exists() else 0
+    })
 
 @app.route("/predict", methods=["POST"])
 def predict():
